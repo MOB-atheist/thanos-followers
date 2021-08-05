@@ -34,16 +34,6 @@ jobs:
         with:
           name: Unit Test Results
           path: junit.xml
-
-      - name: Build 🛠
-        run: npm run build --if-present
-      
-      - name: Upload build 🛠
-        if: success()
-        uses: actions/upload-artifact@v2
-        with:
-          name: Upload 🛠
-          path: build
   
   coverage:
     name: Coverage
