@@ -23,14 +23,14 @@ jobs:
         run: npm install
 
       - name: Unity Test 🗜
-        run: npm test --ci --reporters=default --reporters=jest-junit --outputFile=pytest.xml
+        run: npm test --ci --reporters=default --reporters=jest-junit
 
       - name: Upload Unit Test Results
         if: always()
         uses: actions/upload-artifact@v2
         with:
           name: Unit Test Results
-          path: pytest.xml
+          path: junit.xml
 
   publish-test-results:
     name: 'Publish Unit Tests Results'
