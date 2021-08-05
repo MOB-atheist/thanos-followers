@@ -2,12 +2,12 @@ name: Unity Tests
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
-  build:
+  build-and-test:
     runs-on: ubuntu-latest
 
     steps:
@@ -18,13 +18,34 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 15.x
-      
+
       - name: Installing dependencies 📦
         run: npm install
-        
-      - name: Unity Test Reporter
-        id: unity
-        uses: raulanatol/jest-coverage-comment-action@main
+
+      - name: Unity Test 🗜
+        run: npm test --ci --reporters=default --reporters=jest-junit
+
+      - name: Upload Unit Test Results
+        if: always()
+        uses: actions/upload-artifact@v2
         with:
-          github-token: ${{ secrets.JEST_COMMENTER_TOKEN }}
-          jest-command: 'npm run test'
+          name: Unit Test Results
+          path: junit.xml
+
+  publish-test-results:
+    name: 'Publish Unit Tests Results'
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    # the build-and-test job might be skipped, we don't need to run this job then
+    if: success() || failure()
+
+    steps:
+      - name: Download Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          path: artifacts
+
+      - name: Publish Unit Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v1
+        with:
+          files: artifacts/**/*.xml
