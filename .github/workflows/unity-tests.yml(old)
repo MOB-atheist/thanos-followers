@@ -23,7 +23,7 @@ jobs:
         run: npm install
 
       - name: Unity Test 🗜
-        run: npm test --ci --reporters=default --reporters=jest-junit
+        run: npm test"
 
       - name: Upload Unit Test Results
         if: always()
