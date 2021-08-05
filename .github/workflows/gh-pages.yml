@@ -2,14 +2,16 @@ name: Github Pages
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   pull_request:
-    branches: [main]
+    types: [closed]
+    branches:
+      - main
 
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged
 
     steps:
       - name: Checkout 🛎️
