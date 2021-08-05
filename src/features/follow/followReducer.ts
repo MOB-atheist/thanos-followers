@@ -30,7 +30,10 @@ const uniqueData = (
   original: FollowersInterface[] | FollowingInterface[],
   payload: FollowersInterface[] | FollowingInterface[]
 ): FollowersInterface[] | FollowingInterface[] => {
-  return [...new Set([...original, ...payload])]
+  return [...original, ...payload].filter(
+    (data, index, self) =>
+      index === self.findIndex((t) => t.username === data.username)
+  )
 }
 
 export default (
