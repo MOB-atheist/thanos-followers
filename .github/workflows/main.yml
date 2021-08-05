@@ -1,0 +1,24 @@
+name: Unity Tests
+
+on:
+  push:
+    branches: [ coverage ]
+  pull_request:
+    branches: [ coverage ]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Unity Test Reporter
+        id: unity
+        uses: raulanatol/jest-coverage-comment-action@main
+        with:
+          github-token: ${{ secrets.JEST_COMMENTER_TOKEN }}
+          jest-command: 'npm run test'
+          working-directory: '.'
