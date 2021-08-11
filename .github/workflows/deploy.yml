@@ -45,7 +45,7 @@ jobs:
     steps:
       - name: Coverage run 🗜
         run: |
-          SUMMARY="$(npm run test -- --ci --runInBand --coverage --coverageReporters=text-summary | tail -2 | head -1)"
+          SUMMARY="$(npm run test:coverage)"
           TOKENS=($SUMMARY)
           echo "COVERAGE=$(echo ${TOKENS[2]})" >> $GITHUB_ENV
           REF=${{ github.ref }}
