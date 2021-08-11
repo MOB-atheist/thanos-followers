@@ -17,31 +17,38 @@ jobs:
       - name: Checkout 🛎️
         uses: actions/checkout@v2
 
-      - name: Cache node modules
-        uses: actions/cache@v2
-        env:
-          cache-name: cache-node-modules
-        with:
-          path: ~/
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
-
       - name: Use Node 15.x 🥷🏻
         uses: actions/setup-node@v2
         with:
           node-version: 15.x
 
+      - name: Cache node modules 📚
+        uses: actions/cache@v1
+        with:
+          path: node_modules
+          key: node_modules-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            node_modules-
+
       - name: Installing dependencies 📦
         run: npm install
+  
+  unity-tests:
+    name: Unity Tests
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    # the build-and-test job might be skipped, we don't need to run this job then
+    if: success()
 
-      - name: Uploading node_modules
-        uses: actions/upload-artifact@master
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v2
+      
+      - name: Load node_modules 📚
+        uses: actions/cache@v1
         with:
-          name: node_modules
-          path: ./node_modules
+          path: node_modules
+          key: node_modules-${{ hashFiles('package-lock.json') }}
 
       - name: Unity Test 🗜
         run: npm test
@@ -54,8 +61,8 @@ jobs:
           path: junit.xml
 
   coverage:
-    name: Coverage
-    needs: build-and-test
+    name: Coverage 🎯
+    needs: unity-tests
     runs-on: ubuntu-latest
     # the build-and-test job might be skipped, we don't need to run this job then
     if: success() || failure()
@@ -64,11 +71,11 @@ jobs:
       - name: Checkout 🛎️
         uses: actions/checkout@v2
 
-      - name: "Downloading node_modules"
-        uses: actions/download-artifact@master
+      - name: Load node_modules 📚
+        uses: actions/cache@v1
         with:
-          name: node_modules
-          path: ./node_modules
+          path: node_modules
+          key: node_modules-${{ hashFiles('package-lock.json') }}
 
       - name: Coverage run 🗜
         run: |
@@ -94,14 +101,12 @@ jobs:
 
   publish-test-results:
     name: 'Publish Unit Tests Results'
-    needs: build-and-test
+    needs: unity-tests
     runs-on: ubuntu-latest
     # the build-and-test job might be skipped, we don't need to run this job then
     if: success() || failure()
 
     steps:
-      - name: Checkout 🛎️
-        uses: actions/checkout@v2
 
       - name: Download Artifacts
         uses: actions/download-artifact@v2
