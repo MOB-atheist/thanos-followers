@@ -29,7 +29,6 @@
   "scripts": {
     "start": "webpack serve",
     "build": "webpack --mode=production",
-    "postbuild": "echo \"Error: no postbuild specified\" && exit 1",
     "test": "jest",
     "test:junit": "jest --ci --coverage=true --reporters=default --reporters=jest-junit",
     "test:coverage": "jest -- --ci --whatchAll=true --coverage=true --coverageReporters=text-summary"
