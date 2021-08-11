@@ -3,38 +3,56 @@
 name: Deploy
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
   workflow_dispatch:
 
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout 🛎️
         uses: actions/checkout@v2
+
+      - name: Cache node modules
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: ~/
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
 
       - name: Use Node 15.x 🥷🏻
         uses: actions/setup-node@v2
         with:
           node-version: 15.x
-      
+
       - name: Installing dependencies 📦
         run: npm install
 
+      - name: Uploading node_modules
+        uses: actions/upload-artifact@master
+        with:
+          name: node_modules
+          path: ./node_modules
+
       - name: Unity Test 🗜
         run: npm test
-      
+
       - name: Upload Unit Test Results 🗜
         if: always()
         uses: actions/upload-artifact@v2
         with:
           name: Unit Test Results
           path: junit.xml
-  
+
   coverage:
     name: Coverage
     needs: build-and-test
@@ -45,9 +63,12 @@ jobs:
     steps:
       - name: Checkout 🛎️
         uses: actions/checkout@v2
-      
-      - name: Build 
-        uses: ./
+
+      - name: "Downloading node_modules"
+        uses: actions/download-artifact@master
+        with:
+          name: node_modules
+          path: ./node_modules
 
       - name: Coverage run 🗜
         run: |
@@ -81,10 +102,11 @@ jobs:
     steps:
       - name: Checkout 🛎️
         uses: actions/checkout@v2
-      
+
       - name: Download Artifacts
         uses: actions/download-artifact@v2
         with:
+          name: Unit Test Results
           path: artifacts
 
       - name: Publish Unit Test Results
