@@ -61,7 +61,7 @@ jobs:
       #     path: junit.xml
 
   gh-pages:
-    name: Unity Tests 🎯
+    name: Github Pages 📝
     needs: unity-tests
     runs-on: ubuntu-latest
     # the build-and-test job might be skipped, we don't need to run this job then
@@ -76,7 +76,7 @@ jobs:
         with:
           path: node_modules
           key: node_modules-${{ hashFiles('package-lock.json') }}
-          
+
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@4.1.1
         with:
