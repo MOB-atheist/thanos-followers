@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  dependencies:
     runs-on: ubuntu-latest
 
     steps:
@@ -35,7 +35,7 @@ jobs:
   
   unity-tests:
     name: Unity Tests 🎯
-    needs: build
+    needs: dependencies
     runs-on: ubuntu-latest
     # the build-and-test job might be skipped, we don't need to run this job then
     if: success()
@@ -76,6 +76,9 @@ jobs:
         with:
           path: node_modules
           key: node_modules-${{ hashFiles('package-lock.json') }}
+      
+      - name: Build 🛠
+        run: npm build
 
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@4.1.1
