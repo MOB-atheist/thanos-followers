@@ -43,8 +43,8 @@ jobs:
     if: success() || failure()
 
     steps:
-      - name: Checkout 🛎️
-        uses: actions/checkout@v2
+      - name: Build
+        uses: ./
 
       - name: Coverage run 🗜
         run: |
