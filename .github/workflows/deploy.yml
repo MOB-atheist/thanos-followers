@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: Coverage
+name: Deploy
 on:
   push:
     branches: [ main ]
@@ -59,7 +59,7 @@ jobs:
         with:
           auth: ${{ secrets.GIST_SECRET }}
           gistID: 372a6422381c896e3eeafd79058737d7
-          filename: thanos_followers__${{ env.BRANCH }}.json
+          filename: thanos_followers_coverage_${{ env.BRANCH }}.json
           label: Coverage
           message: ${{ env.COVERAGE }}
           color: green
