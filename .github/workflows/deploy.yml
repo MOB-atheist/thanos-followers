@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-test:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -35,7 +35,7 @@ jobs:
   
   unity-tests:
     name: Unity Tests 🎯
-    needs: build-and-test
+    needs: build
     runs-on: ubuntu-latest
     # the build-and-test job might be skipped, we don't need to run this job then
     if: success()
@@ -60,6 +60,28 @@ jobs:
       #     name: Unit Test Results
       #     path: junit.xml
 
+  gh-pages:
+    name: Unity Tests 🎯
+    needs: unity-tests
+    runs-on: ubuntu-latest
+    # the build-and-test job might be skipped, we don't need to run this job then
+    if: success()
+
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v2
+
+      - name: Load node_modules 📚
+        uses: actions/cache@v1
+        with:
+          path: node_modules
+          key: node_modules-${{ hashFiles('package-lock.json') }}
+          
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@4.1.1
+        with:
+          branch: gh-pages
+          folder: build
   # coverage:
   #   name: Coverage ☂️
   #   needs: unity-tests
