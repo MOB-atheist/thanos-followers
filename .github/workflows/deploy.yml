@@ -43,10 +43,8 @@ jobs:
     if: success() || failure()
 
     steps:
-      - name: Build
-        uses: ./
-
       - name: Coverage run 🗜
+        uses: ./
         run: |
           SUMMARY="$(npm run test:coverage)"
           TOKENS=($SUMMARY)
