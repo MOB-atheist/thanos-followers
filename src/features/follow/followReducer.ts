@@ -15,7 +15,7 @@ const initialState = {
 
 const deleteData = (
   original: FollowersInterface[] | FollowingInterface[],
-  payload: FollowersInterface[] | FollowingInterface[]
+  payload: any
 ): FollowersInterface[] | FollowingInterface[] => {
   return original.filter(
     (follower: FollowersInterface) =>
@@ -28,7 +28,7 @@ const deleteData = (
 
 const uniqueData = (
   original: FollowersInterface[] | FollowingInterface[],
-  payload: FollowersInterface[] | FollowingInterface[]
+  payload: any
 ): FollowersInterface[] | FollowingInterface[] => {
   return [...original, ...payload].filter(
     (data, index, self) =>
@@ -37,7 +37,7 @@ const uniqueData = (
 }
 
 export default (
-  state = initialState,
+  state: UserFollowsStateTypes = initialState,
   action: ActionInterface
 ): UserFollowsStateTypes => {
   switch (action.type) {

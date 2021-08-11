@@ -1,7 +1,13 @@
-import { Actions, ActionInterface } from './types'
+import {
+  Actions,
+  ActionInterface,
+  FollowersInterface,
+  UserFollowsStateTypes,
+  FollowingInterface,
+} from './types'
 import followReducer from './followReducer'
 
-describe('features > counter > counterReducer', () => {
+describe('features > follow > Reducer', () => {
   it(`adds a follower, if ${Actions.ADD_FOLLOWER} action is provided`, () => {
     const initialState = {
       followers: [],
@@ -127,6 +133,45 @@ describe('features > counter > counterReducer', () => {
           username: 'test',
         },
       ],
+    }
+
+    expect(followReducer(initialState, action)).toEqual(expectedState)
+  })
+
+  it(`clears data, if ${Actions.CLEAR_DATA} action is provided`, () => {
+    const initialState = {
+      followers: [
+        {
+          username: 'test',
+        },
+      ] as FollowersInterface[],
+      following: [
+        {
+          username: 'test',
+        },
+      ] as FollowingInterface[],
+      deletedFollowers: [
+        {
+          username: 'test',
+        },
+      ] as FollowersInterface[],
+      deletedFollowing: [
+        {
+          username: 'test',
+        },
+      ] as FollowingInterface[],
+    } as UserFollowsStateTypes
+
+    const expectedState = {
+      followers: [],
+      following: [],
+      deletedFollowers: [],
+      deletedFollowing: [],
+    }
+
+    const action: ActionInterface = {
+      type: Actions.CLEAR_DATA,
+      payload: {} as any,
     }
 
     expect(followReducer(initialState, action)).toEqual(expectedState)
