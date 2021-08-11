@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: Deploy
+name: Deploy 🎬
 on:
   push:
     branches: [main]
@@ -34,7 +34,7 @@ jobs:
         run: npm install
   
   unity-tests:
-    name: Unity Tests
+    name: Unity Tests 🎯
     needs: build-and-test
     runs-on: ubuntu-latest
     # the build-and-test job might be skipped, we don't need to run this job then
@@ -53,73 +53,73 @@ jobs:
       - name: Unity Test 🗜
         run: npm test
 
-      - name: Upload Unit Test Results 🗜
-        if: always()
-        uses: actions/upload-artifact@v2
-        with:
-          name: Unit Test Results
-          path: junit.xml
+      # - name: Upload Unit Test Results 🗜
+      #   if: always()
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: Unit Test Results
+      #     path: junit.xml
 
-  coverage:
-    name: Coverage 🎯
-    needs: unity-tests
-    runs-on: ubuntu-latest
-    # the build-and-test job might be skipped, we don't need to run this job then
-    if: success() || failure()
+  # coverage:
+  #   name: Coverage ☂️
+  #   needs: unity-tests
+  #   runs-on: ubuntu-latest
+  #   # the build-and-test job might be skipped, we don't need to run this job then
+  #   if: success() || failure()
 
-    steps:
-      - name: Checkout 🛎️
-        uses: actions/checkout@v2
+  #   steps:
+  #     - name: Checkout 🛎️
+  #       uses: actions/checkout@v2
 
-      - name: Load node_modules 📚
-        uses: actions/cache@v1
-        with:
-          path: node_modules
-          key: node_modules-${{ hashFiles('package-lock.json') }}
+  #     - name: Load node_modules 📚
+  #       uses: actions/cache@v1
+  #       with:
+  #         path: node_modules
+  #         key: node_modules-${{ hashFiles('package-lock.json') }}
 
-      - name: Coverage run 🗜
-        run: |
-          SUMMARY="$(npm run test:coverage)"
-          TOKENS=($SUMMARY)
-          echo "COVERAGE=$(echo ${TOKENS[2]})" >> $GITHUB_ENV
-          REF=${{ github.ref }}
-          echo "github.ref: $REF"
-          IFS='/' read -ra PATHS <<< "$REF"
-          BRANCH_NAME="${PATHS[1]}_${PATHS[2]}"
-          echo $BRANCH_NAME
-          echo "BRANCH=$(echo ${BRANCH_NAME})" >> $GITHUB_ENV
-      - name: Create Coverage Badge
-        uses: schneegans/dynamic-badges-action@v1.0.0
-        with:
-          auth: ${{ secrets.GIST_SECRET }}
-          gistID: 372a6422381c896e3eeafd79058737d7
-          filename: thanos_followers_coverage_${{ env.BRANCH }}.json
-          label: Coverage
-          message: ${{ env.COVERAGE }}
-          color: green
-          namedLogo: jest
+  #     - name: Coverage run 🗜
+  #       run: |
+  #         SUMMARY="$(npm run test:coverage)"
+  #         TOKENS=($SUMMARY)
+  #         echo "COVERAGE=$(echo ${TOKENS[2]})" >> $GITHUB_ENV
+  #         REF=${{ github.ref }}
+  #         echo "github.ref: $REF"
+  #         IFS='/' read -ra PATHS <<< "$REF"
+  #         BRANCH_NAME="${PATHS[1]}_${PATHS[2]}"
+  #         echo $BRANCH_NAME
+  #         echo "BRANCH=$(echo ${BRANCH_NAME})" >> $GITHUB_ENV
+  #     - name: Create Coverage Badge
+  #       uses: schneegans/dynamic-badges-action@v1.0.0
+  #       with:
+  #         auth: ${{ secrets.GIST_SECRET }}
+  #         gistID: 372a6422381c896e3eeafd79058737d7
+  #         filename: thanos_followers_coverage_${{ env.BRANCH }}.json
+  #         label: Coverage
+  #         message: ${{ env.COVERAGE }}
+  #         color: green
+  #         namedLogo: jest
 
-  publish-test-results:
-    name: 'Publish Unit Tests Results'
-    needs: unity-tests
-    runs-on: ubuntu-latest
-    # the build-and-test job might be skipped, we don't need to run this job then
-    if: success() || failure()
+  # publish-test-results:
+  #   name: 'Publish Unit Tests Results'
+  #   needs: unity-tests
+  #   runs-on: ubuntu-latest
+  #   # the build-and-test job might be skipped, we don't need to run this job then
+  #   if: success() || failure()
 
-    steps:
-      - name: Checkout 🛎️
-        uses: actions/checkout@v2
+  #   steps:
+  #     - name: Checkout 🛎️
+  #       uses: actions/checkout@v2
 
-      - name: Load node_modules 📚
-        uses: actions/cache@v1
-        with:
-          path: node_modules
-          key: node_modules-${{ hashFiles('package-lock.json') }}
+  #     - name: Load node_modules 📚
+  #       uses: actions/cache@v1
+  #       with:
+  #         path: node_modules
+  #         key: node_modules-${{ hashFiles('package-lock.json') }}
 
-      - name: Unity Test 🗜
-        run: npm test:junit
+  #     - name: Unity Test 🗜
+  #       run: npm test:junit
 
-      - name: Publish Unit Test Results
-        uses: EnricoMi/publish-unit-test-result-action@v1
-        with:
-          files: artifacts/**/*.xml
+  #     - name: Publish Unit Test Results
+  #       uses: EnricoMi/publish-unit-test-result-action@v1
+  #       with:
+  #         files: artifacts/**/*.xml
